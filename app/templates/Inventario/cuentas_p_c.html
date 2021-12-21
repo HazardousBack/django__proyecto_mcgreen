@@ -1,0 +1,168 @@
+{% load static %} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuentas por cobrar</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min (1).css' %}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="/Inventario_general">Inventario general</a></li>
+            {% if privilegio == 'ADM-IN1' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle btn" type="button" id="navbarDropdown" aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                    Usuarios
+                </button>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Registro">Registrar usuario</a>
+                    <a class="dropdown-item" href="/Usuarios">Usuarios</a>
+                </div>
+            </li>
+            {% elif privilegio == 'JEFE' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+
+    <div class="container d-flex justify-content-center mt-5">
+        <div class="d-flex col-lg-12">
+            <form action="{% url 'cuenta_por_cobrar' %}" method="POST" class="card card-body justify-content-center">
+                <div class="d-flex justify-content-around mb-3">
+                    <div class="text-center">
+                        <label for="">Cuenta</label>
+                        <input type="text" name="id_cpc" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Status</label>
+                        <input type="text" name="status" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Fecha de pago de factura</label>
+                        <input type="date" name="fecha_pago_fac" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Contrarecibo</label>
+                        <input type="text" name="id_cpc" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3 mb-3">
+                    <div class="text-center">
+                        <label for="">Fecha de recibo de pago</label>
+                        <input type="date" name="fecha_rec_pago" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Sp</label>
+                        <input type="text" name="sp" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">oc</label>
+                        <input type="text" name="oc" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Fecha</label>
+                        <input type="date" name="fecha" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3 mb-3">
+                    <div class="text-center">
+                        <label for="">Porcentaje</label>
+                        <input type="text" name="porcentaje" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Pozo</label>
+                        <input type="text" name="pozo" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Email</label>
+                        <input type="text" name="email" class="form-control" value="{{ sesion }}" readonly="true">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Sistemas</label>
+                        <select name="sl_sistemas" class="form-select">
+                            <option defauñt selected disabled>--Seleccionar--</option>
+                            {% for sistema in sistemas %}
+                                <option value="{{ sistema.id }}">{{ sistema.nombre_sist }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <label for="">Total de servicios</label>
+                        <input type="number" name="total_servicios" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3 mb-3">
+                    <div class="text-center">
+                        <label for="">Precio USD</label>
+                        <input type="number" name="precio_usd" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Subtotal USD</label>
+                        <input type="number" name="subtotal_usd" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">IVA</label>
+                        <input type="number" name="iva" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Total USD por servicio</label>
+                        <input type="number" name="total_usd_servicio" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Monto total</label>
+                        <input type="number" name="monto_total" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3 mb-3">
+                    <div class="text-center">
+                        <label for="">Num. factura</label>
+                        <input type="number" name="no_factura" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Fecha de factura</label>
+                        <input type="date" name="fecha_de_fac" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Recibo de pago de factura McGreen</label>
+                        <input type="text" name="recibo_pago_fac_mcgreen" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Fecha de recibo de pago</label>
+                        <input type="date" name="fecha_r_pag" class="form-control">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <div class="text-center">
+                        <label for="">Dólares</label>
+                        <input type="number" name="dolares" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Monto m x p</label>
+                        <input type="number" name="monto_mp" class="form-control">
+                    </div>
+                    <div class="text-center">
+                        <label for="">Monto m x p pagado</label>
+                        <input type="number" name="monto_mp_pagado" class="form-control">
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-dark mt-3" value="Registrar venta">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

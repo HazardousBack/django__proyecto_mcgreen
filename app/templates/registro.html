@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Registrar usuario</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min (1).css' %}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="/Inventario_general">Inventario general</a></li>
+            {% if privilegio == 'ADM-IN1' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle btn" type="button" id="navbarDropdown" aria-haspopup="true" data-toggle="dropdown" aria-expanded="true">
+                    Usuarios
+                </button>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Registro">Registrar usuario</a>
+                    <a class="dropdown-item" href="/Usuarios">Usuarios</a>
+                </div>
+            </li>
+            {% elif privilegio == 'JEFE' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+    <div class="container col-md-5 mt-5">
+        <form action="registra_usuario" method="POST" id="form1" class="card card-body">
+            {% csrf_token %}
+            <div class="d-flex justify-content-around">
+                <div>
+                    <label class="{{ formulario.matricula.id_for_label }}">Matricula</label>
+                    {{ formulario.matricula }}
+                </div>
+                <div>
+                    <label class="{{ formulario.nombre_usuario.id_for_label }}">Nombre</label>
+                    {{ formulario.nombre_usuario }}
+                </div>
+            </div>
+            <div class="input-group mt-3 align-items-center">
+                <label class="{{ formulario.ap_p.id_for_label }}">Apellido paterno</label>
+                {{ formulario.ap_p }}
+            </div>
+            <div class="input-group mt-3 align-items-center">
+                <label class="{{ formulario.ap_m.id_for_label }}">Apellido materno</label>
+                {{ formulario.ap_m }}
+            </div>
+            <div class="mt-3 d-flex align-items-center">
+                <label class="{{ formulario.sl_puestos.id_for_label }}">Puesto</label>
+                {{ formulario.sl_puestos }}
+                {% comment %} <select class="form-select" name="sl_puestos">
+                    <option></option>
+                </select> {% endcomment %}
+            </div>
+            <div class="mt-3 d-flex align-items-center justify-content-around">
+                <label class="{{ formulario.email.id_for_label }}">Email</label>
+                    {{ formulario.email }}
+                    {{ formulario.slemail }}
+                
+            </div>
+            <div class="mt-3 d-flex align-items-center">
+                <label fpr="{{ formulario.password1.id_for_label }}">Contraseña</label>
+                {{ formulario.contra }}
+            </div>
+            <p class="text-center h6 mt-3">Privilegios</p>
+            <div class="d-block text-center">
+                {% for rol in formulario.rol %}
+                    {{ rol }}
+                {% endfor %}
+                {% comment %} <input type="radio" class="input-radio" name="rol" id="administrador" value="Administrador">
+                <label for="administrador">Administrador</label>
+                <input type="radio" class="input-radio" name="rol" id="jefe" value="Jefe">
+                <label for="jefe">Jefe</label>
+                <input type="radio" class="input-radio" name="rol" id="empleado" value="Empleado">
+                <label for="empleado">Empleado</label> {% endcomment %}
+            </div>
+            <button type="submit" id="btnRegistrar" class="btn btn-success form-control mt-3">Registrar</button>
+        </form>
+    </div>
+    <footer class="text-center">
+        <p> Derechos reservados <strong>Fluidos McGreen de México S.A de C.V</strong></p>
+        <p>Fecha: {% now 'd \d\e F \d\e\l Y' %}</p>
+    </footer>
+</body>
+</html>

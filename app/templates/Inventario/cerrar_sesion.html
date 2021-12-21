@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Fluidos McGreen</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+</head>
+<body onload="nobackbutton();">
+    <div class="contenedor">
+        <h1 class="text-center">Sesión cerrada</h1>
+        <h1 class="text-center">Volviendo a inicio...</h1>
+    </div>
+    <footer class="text-center">
+        <p> Derechos reservados <strong>Fluidos McGreen de México S.A de C.V</strong></p>
+        <p>Fecha: {% now 'd \d\e F \d\e\l Y' %}</p>
+    </footer>
+    <script src="{% static 'js/botonRegresar.js'%}"></script>
+    <script>
+        function nobackbutton(){
+            window.location.hash="no-back-button";
+            window.location.hash="Again-No-back-button" //chrome
+            window.onhashchange=function(){window.location.hash="no-back-button";}
+        }
+        window.setTimeout(function () {
+            location.href = "http://127.0.0.1:8000";
+        }, 3000);
+    </script>
+</body>
+</html>

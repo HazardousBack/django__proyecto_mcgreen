@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Usuarios McGreen</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min (1).css' %}" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="/Inventario_general">Inventario general</a></li>
+            {% if privilegio == 'ADM-IN1' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle btn" type="button" id="navbarDropdown" aria-haspopup="true" data-toggle="dropdown" aria-expanded="true">
+                    Usuarios
+                </button>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/Registro">Registrar usuario</a>
+                    <a class="dropdown-item" href="/Usuarios">Usuarios</a>
+                </div>
+            </li>
+            {% elif privilegio == 'JEFE' %}
+            <li class="nav-item"><a class="nav-link" href="/Compras">Entradas</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Ventas">Cuentas por cobrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Otras_E_S">Otras E/S</a></li>
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="/Movimientos">Movimientos de inventario</a></li>
+            {% endif %}
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="{% url 'cerrar_sesion' %}">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <h1 class="text-center">Usuarios registrados</h1>
+        <div class="row">
+            {% for usuario in usuarios %}
+            <div class="col-sm card card-body text-justify text-center" style="width: 21rem;">
+                <h5 class="card-title text-center">{{ usuario.3 }} {{ usuario.4 }} {{ usuario.5 }}</h5>
+                <p class="card-text">Correo: {{ usuario.0 }}</p>
+                <p class="card-text">Fecha de registro: {{ usuario.6 }}</p>
+                <p class="card-text">Puesto: {{ usuario.7 }}</p>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <footer class="text-center">
+        <p> Derechos reservados <strong>Fluidos McGreen de México S.A de C.V</strong></p>
+        <p>Fecha: {% now 'd \d\e F \d\e\l Y' %}</p>
+    </footer>
+</body>
+</html>
