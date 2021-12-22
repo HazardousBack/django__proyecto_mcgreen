@@ -92,17 +92,6 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mcgreen',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'"
-        }
-    },
-    'HostGator': {
-        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'fluidos4_mcgreen',
         'USER': 'fluidos4_hazardousback',
         'PASSWORD': '0uFM&UV-G13+',
