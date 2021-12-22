@@ -116,6 +116,10 @@ def conseguir_precio(request,prod):
         return JsonResponse({'data': precios})
     return HttpResponse("Wrong request")
 
+def agregar_sistema(request):
+    sistemas = models.sistemas(request.POST[""])
+    return redirect("/Ventas")
+
 # Proveedores
 def agregar_proveedores(request):
     if request.session.get('email'):
