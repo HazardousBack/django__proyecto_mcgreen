@@ -83,8 +83,6 @@ TEMPLATES = [
     },
 ]
 
-
-AUTH_USER_MODEL = 'app.Account'
 WSGI_APPLICATION = 'proyecto.wsgi.application'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
