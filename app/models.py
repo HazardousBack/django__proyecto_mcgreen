@@ -5,42 +5,6 @@ import datetime
 
 from django.db.models.fields import CharField
 # Create your models here.
-class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
-        if not email:
-            return ValueError("Usuario debe contar con una dirección de correo electrónico")
-        if not username:
-            return ValueError("Usuario debe contar con una dirección de correo electrónico")
-        
-        user = self.model(
-            email = self.normalize_email(email),
-            username = username,
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-class Account(AbstractBaseUser):
-    email = models.EmailField(max_length=50, unique=True)
-    username = models.EmailField(max_length=50, unique=True)
-    date_joined = models.DateTimeField(auto_now=True)
-    last_login = models.DateTimeField(auto_now=True)
-    is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    nombre = models.CharField(max_length=100)
-    ap_paterno = models.CharField(max_length=100)
-    ap_materno = models.CharField(max_length=100)
-    
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    objects = MyAccountManager()
-
-
 class Departamento(models.Model):
     id_dep = models.CharField(max_length=20, primary_key=True)
     nombre_dep = models.CharField(max_length=100)
