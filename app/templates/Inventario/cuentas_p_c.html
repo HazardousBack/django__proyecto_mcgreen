@@ -42,42 +42,13 @@
 
     <div class="container d-flex justify-content-center mt-2">
         <div class="col-md-12">
-            <form action="{% url 'agregar_sistema' %}" class="card card-body d-flex col-sm-5 m-auto mb-2">
-                <h1 class="text-center">Agregar nuevo sistema</h1>
+            <form action="{% url 'cuenta_por_cobrar' %}" method="POST" id="form-c_p_c" class="card card-body justify-content-center">
                 {% csrf_token %}
-                <div class="d-flex justify-content-around">
-                    <div>
-                        <label>Nombre de sistema</label>
-                        <input type="text" name="sistema" class="form-control">
-                    </div>
-                    <div>
-                        <label>Porcentaje</label>
-                        <input type="text" name="porcentaje" class="form-control">
-                    </div>
-                </div>
-                <div class="d-flex justify-content-around">
-                    <div>
-                        <label>Descripción</label>
-                        <input type="text" name="desc" class="form-control">
-                    </div>
-                    <div>
-                        <label>Cantidad</label>
-                        <input type="number" name="cantidad" class="form-control">
-                    </div>
-                </div>
-                <div class="m-auto col-sm-7">
-                    <label>Precio unitario de venta en dólares</label>
-                    <input type="number" name="p_u_v_d" class="form-control">
-                </div>
-
-                <input type="submit" class="btn btn-info form-control mt-3" value="Guardar">
-            </form>
-            <form action="{% url 'cuenta_por_cobrar' %}" method="POST" class="card card-body justify-content-center">
                 <h1 class="card-title text-center">Generar venta</h1>
                 <div class="d-flex justify-content-around mb-3">
                     <div class="text-center">
-                        <label for="">Cuenta</label>
-                        <input type="text" name="id_cpc" class="form-control">
+                        <label for="">Email</label>
+                        <input type="text" name="email" class="form-control" value="{{ sesion }}" readonly="true">
                     </div>
                     <div class="text-center">
                         <label for="">Status</label>
@@ -89,7 +60,7 @@
                     </div>
                     <div class="text-center">
                         <label for="">Contrarecibo</label>
-                        <input type="text" name="id_cpc" class="form-control">
+                        <input type="text" name="contrarecibo" class="form-control">
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-3 mb-3">
@@ -112,51 +83,25 @@
                 </div>
                 <div class="d-flex justify-content-between mt-3 mb-3">
                     <div class="text-center">
-                        <label for="">Porcentaje</label>
-                        <input type="text" name="porcentaje" class="form-control">
+                        <label for="">Elegir sistema</label>
+                        <select name="sl_sistemas" class="form-select">
+                            <option defauñt selected disabled>--Seleccionar--</option>
+                            {% for sistema in sistemas %}
+                                <option value="{{ sistema.0 }} {{ sistema.6 }}">{{ sistema.1 }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="text-center">
                         <label for="">Pozo</label>
                         <input type="text" name="pozo" class="form-control">
                     </div>
                     <div class="text-center">
-                        <label for="">Email</label>
-                        <input type="text" name="email" class="form-control" value="{{ sesion }}" readonly="true">
-                    </div>
-                    <div class="text-center">
-                        <label for="">Sistemas</label>
-                        <select name="sl_sistemas" class="form-select">
-                            <option defauñt selected disabled>--Seleccionar--</option>
-                            {% for sistema in sistemas %}
-                                <option value="{{ sistema.id }}">{{ sistema.nombre_sist }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="text-center">
                         <label for="">Total de servicios</label>
                         <input type="number" name="total_servicios" class="form-control">
                     </div>
-                </div>
-                <div class="d-flex justify-content-between mt-3 mb-3">
                     <div class="text-center">
                         <label for="">Precio USD</label>
-                        <input type="number" name="precio_usd" class="form-control">
-                    </div>
-                    <div class="text-center">
-                        <label for="">Subtotal USD</label>
-                        <input type="number" name="subtotal_usd" class="form-control">
-                    </div>
-                    <div class="text-center">
-                        <label for="">IVA</label>
-                        <input type="number" name="iva" class="form-control">
-                    </div>
-                    <div class="text-center">
-                        <label for="">Total USD por servicio</label>
-                        <input type="number" name="total_usd_servicio" class="form-control">
-                    </div>
-                    <div class="text-center">
-                        <label for="">Monto total</label>
-                        <input type="number" name="monto_total" class="form-control">
+                        <input type="number" name="precio_usd" id="precio_usd" class="form-control" readonly="true">
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-3 mb-3">
@@ -183,10 +128,6 @@
                         <input type="number" name="dolares" class="form-control">
                     </div>
                     <div class="text-center">
-                        <label for="">Monto m x p</label>
-                        <input type="number" name="monto_mp" class="form-control">
-                    </div>
-                    <div class="text-center">
                         <label for="">Monto m x p pagado</label>
                         <input type="number" name="monto_mp_pagado" class="form-control">
                     </div>
@@ -195,5 +136,13 @@
             </form>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#form-c_p_c select[name='sl_sistemas']").on('change', function() {
+            var $this = $(this).val().split(' ')[1];
+            
+            $('#precio_usd').val(parseFloat($this));
+        });
+    </script>
 </body>
 </html>

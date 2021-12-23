@@ -115,15 +115,14 @@ def ventas(request):
     if request.session.get('email'):
         if request.method != 'POST':
             cursor = connection.cursor()
-            cursor.callproc('MOSTRAR_PRODUCTOS_ACTIVOS')
+            cursor.callproc('MOSTRAR_SISTEMAS_ACTIVOS')
             form = formulario_cliente()
             context = {
-                'productos': cursor.fetchall(),
+                'sistemas': cursor.fetchall(),
                 'clientes': models.Clientes.objects.all(),
                 'sesion': request.session.get("email"),
                 'privilegio': request.session.get("privilegio"),
                 'form': form,
-                'sistemas': models.sistemas.objects.all(),
             }
             cursor.close()
             return render(request, 'Inventario/cuentas_p_c.html', context)
