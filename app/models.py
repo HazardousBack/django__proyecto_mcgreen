@@ -1,6 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.db.models.deletion import CASCADE
+from django.db.models.deletion import CASCADE, RESTRICT
 import datetime
 
 from django.db.models.fields import CharField
@@ -14,7 +14,7 @@ class Puestos(models.Model):
     id_puesto = models.CharField(max_length=20, primary_key=True)
     nombre_puesto = models.CharField(max_length=40)
     descr_p = models.CharField(max_length=255)
-    id_dep = models.ForeignKey(Departamento, on_delete=CASCADE)
+    id_dep = models.ForeignKey(Departamento, on_delete=RESTRICT)
 
     def __str__(self):
         return u'{0}'.format(self.nombre_puesto)
@@ -34,27 +34,27 @@ class Imagenes(models.Model):
 
 class Empleados(models.Model):
     id_empleado = models.CharField(max_length=20, primary_key=True)
-    id_img = models.ForeignKey(Imagenes, on_delete=CASCADE)
+    id_img = models.ForeignKey(Imagenes, on_delete=RESTRICT)
     nombre = models.CharField(max_length=50)
     ap_paterno = models.CharField(max_length=30)
     ap_materno = models.CharField(max_length=30)
-    puesto = models.ForeignKey(Puestos, on_delete=CASCADE)
+    puesto = models.ForeignKey(Puestos, on_delete=RESTRICT)
     fecha_registro = models.DateField()
 
 class Usuarios(models.Model):
     email = models.CharField(max_length=50, primary_key=True)
     pass_word = models.CharField(max_length=50)
-    privilegio = models.ForeignKey(Privilegios, on_delete=CASCADE)
-    empleado = models.ForeignKey(Empleados, on_delete=CASCADE)
+    privilegio = models.ForeignKey(Privilegios, on_delete=RESTRICT)
+    empleado = models.ForeignKey(Empleados, on_delete=RESTRICT)
 
 class Inventario(models.Model):
     id_producto = models.CharField(max_length=20, primary_key=True)
-    id_img = models.ForeignKey(Imagenes,  on_delete=CASCADE)
+    id_img = models.ForeignKey(Imagenes,  on_delete=RESTRICT)
     nombre_producto = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=100)
     cantidad = models.FloatField()
     medida = models.CharField(max_length=15)
-    id_dep = models.ForeignKey(Departamento, on_delete=CASCADE)
+    id_dep = models.ForeignKey(Departamento, on_delete=RESTRICT)
 
 class Movimientos_almacen(models.Model):
     id_MovAlm = models.CharField(max_length=20, primary_key=True)
@@ -75,21 +75,21 @@ class Compras(models.Model):
     id_MovAlm = models.CharField(max_length=20)
     valor_total = models.DecimalField(max_digits=19, decimal_places=4)
     fecha_compra = models.DateField()
-    email = models.ForeignKey(Usuarios, on_delete=CASCADE)
+    email = models.ForeignKey(Usuarios, on_delete=RESTRICT)
 
 class Ventas(models.Model):
     id_venta = models.CharField(max_length=20, primary_key=True)
-    id_MovAlm = models.ForeignKey(Movimientos_almacen, on_delete=CASCADE)
+    id_MovAlm = models.ForeignKey(Movimientos_almacen, on_delete=RESTRICT)
     valor_total = models.DecimalField(max_digits=19, decimal_places=4)
-    email = models.ForeignKey(Usuarios, on_delete=CASCADE)
+    email = models.ForeignKey(Usuarios, on_delete=RESTRICT)
     fecha_venta = models.DateField()
 
 class Mov_Ind(models.Model):
     id_MovInd = models.CharField(max_length=20, primary_key=True)
-    id_MovAlm = models.ForeignKey(Movimientos_almacen, on_delete=CASCADE)
-    id_producto = models.ForeignKey(Inventario, on_delete=CASCADE)
+    id_MovAlm = models.ForeignKey(Movimientos_almacen, on_delete=RESTRICT)
+    id_producto = models.ForeignKey(Inventario, on_delete=RESTRICT)
     cant_prod = models.FloatField()
-    email = models.ForeignKey(Usuarios, on_delete=CASCADE)
+    email = models.ForeignKey(Usuarios, on_delete=RESTRICT)
 
 class Proveedor(models.Model):
     id_provee = models.CharField(max_length=20, primary_key=True)
@@ -98,36 +98,28 @@ class Proveedor(models.Model):
     email = models.CharField(max_length=200)
 
 class PRECIO_INV_VENTA(models.Model):
-    ID_PRODUCTO = models.ForeignKey(Inventario, on_delete=CASCADE)
+    ID_PRODUCTO = models.ForeignKey(Inventario, on_delete=RESTRICT)
     PRECIO_UNIT_VENTA = models.DecimalField(max_digits=19, decimal_places=4)
 
 class Est_Prod(models.Model):
-    id_producto = models.ForeignKey(Inventario, on_delete=CASCADE)
+    id_producto = models.ForeignKey(Inventario, on_delete=RESTRICT)
     estado = models.CharField(max_length=20)
 
 class detalles_compras(models.Model):
     id_detalle = models.CharField(max_length=20, primary_key=True)
-    id_compra = models.ForeignKey(Compras, on_delete=CASCADE)
-    id_producto = models.ForeignKey(Inventario, on_delete=CASCADE)
+    id_compra = models.ForeignKey(Compras, on_delete=RESTRICT)
+    id_producto = models.ForeignKey(Inventario, on_delete=RESTRICT)
     precio_unitario = models.DecimalField(max_digits=19, decimal_places=4)
     cant_xprod = models.DecimalField(max_digits=19, decimal_places=4)
-    id_provee = models.ForeignKey(Proveedor, on_delete=CASCADE)
+    id_provee = models.ForeignKey(Proveedor, on_delete=RESTRICT)
 
 class detalles_ventas(models.Model):
     id_detalle = models.CharField(max_length=20, primary_key=True)
-    id_venta = models.ForeignKey(Ventas, on_delete=CASCADE)
-    id_producto = models.ForeignKey(Inventario, on_delete=CASCADE)
+    id_venta = models.ForeignKey(Ventas, on_delete=RESTRICT)
+    id_producto = models.ForeignKey(Inventario, on_delete=RESTRICT)
     precio_unitario = models.DecimalField(max_digits=19, decimal_places=4)
     cant_xprod = models.DecimalField(max_digits=19, decimal_places=4)
-    id_cliente = models.ForeignKey(Clientes, on_delete=CASCADE)
-
-class sistemas(models.Model):
-    id = models.CharField(max_length=20, primary_key=True)
-    nombre_sist = models.CharField(max_length=100)
-    porcentaje = models.CharField(max_length=30)
-    descripcion = models.CharField(max_length=100)
-    cantidad = models.FloatField()
-    p_v_noiva_usd_unit = models.FloatField()
+    id_cliente = models.ForeignKey(Clientes, on_delete=RESTRICT)
 
 class cuentas_por_cobrar(models.Model):
     id_cpc = models.CharField(max_length=20, primary_key=True)
@@ -138,8 +130,8 @@ class cuentas_por_cobrar(models.Model):
     sp = models.CharField(max_length=35)
     oc = models.CharField(max_length=35)
     fecha = models.DateField()
-    id_sist = models.ForeignKey(sistemas, on_delete=CASCADE)
-    email = models.ForeignKey(Usuarios, on_delete=CASCADE, null=True)
+    id_producto = models.ForeignKey(Inventario, on_delete=RESTRICT)
+    email = models.ForeignKey(Usuarios, on_delete=RESTRICT, null=True)
     porcentaje = models.CharField(max_length=35)
     pozo = models.CharField(max_length=100)
     total_servicios = models.FloatField()
