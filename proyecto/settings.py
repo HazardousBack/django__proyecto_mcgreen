@@ -20,13 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ow7n7$+88*2vv2sf+2)l2#699fkt5qu#$^)q*&wj8vafqibn!i'
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY",'ow7n7$+88*2vv2sf+2)l2#699fkt5qu#$^)q*&wj8vafqibn!i')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(os.environ.get("DEBUG")) == "1"
 
+ENV_ALLOWED_HOST = os.environ.get("DJANGO_ALLOWED_HOST") or None
 ALLOWED_HOSTS = []
-
+if not DEBUG:
+    ALLOWED_HOSTS += [os.environ.get("DJANGO_ALLOWED_HOST")]
 
 # Application definition
 
@@ -144,4 +146,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-DISABLE_COLLECTSTATIC=1
