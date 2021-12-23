@@ -91,13 +91,14 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'fluidos4_mcgreen',
-        'USER': 'fluidos4_hazardousback',
-        'PASSWORD': '0uFM&UV-G13+',
-        'HOST': '162.241.62.45',
+        'NAME': 'mcgreen',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'"
@@ -105,6 +106,34 @@ DATABASES = {
     }
 }
 
+MYSQL_NAME = 'fluidos4_mcgreen'
+MYSQL_USER = 'fluidos4_hazardousback'
+MYSQL_PASSWORD = '0uFM&UV-G13+'
+MYSQL_HOST = '162.241.62.45'
+MYSQL_PORT = '3306'
+
+MYSQL_READY = (
+    MYSQL_NAME is not None
+    and MYSQL_USER is not None
+    and MYSQL_PASSWORD is not None
+    and MYSQL_HOST is not None
+    and MYSQL_PORT is not None
+)
+
+if MYSQL_READY:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': MYSQL_NAME,
+            'USER': MYSQL_USER,
+            'PASSWORD': MYSQL_PASSWORD,
+            'HOST': MYSQL_HOST,
+            'PORT': MYSQL_PORT,
+            'OPTIONS': {
+                'init_command': "SET sql_mode='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'"
+            }
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
