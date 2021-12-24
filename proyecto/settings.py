@@ -104,11 +104,11 @@ DATABASES = {
     }
 }
 
-MYSQL_NAME = 'fluidos4_mcgreen'
-MYSQL_USER = 'fluidos4_hazardousback'
-MYSQL_PASSWORD = '0uFM&UV-G13+'
-MYSQL_HOST = '162.241.62.45'
-MYSQL_PORT = '3306'
+MYSQL_NAME = os.environ.get('MYSQL_NAME')
+MYSQL_USER = os.environ.get('MYSQL_USER')
+MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+MYSQL_HOST = os.environ.get('MYSQL_HOST')
+MYSQL_PORT = os.environ.get('MYSQL_PORT')
 
 MYSQL_READY = (
     MYSQL_NAME is not None
