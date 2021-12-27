@@ -145,3 +145,9 @@ class cuentas_por_cobrar(models.Model):
     dllr = models.CharField(max_length=20)
     monto_mxp = models.DecimalField(decimal_places=4, max_digits=19)
     monto_mxp_pagado = models.DecimalField(decimal_places=4, max_digits=19)
+
+class auditoria(models.Model):
+    id_audit = models.AutoField(primary_key=True)
+    email = models.ForeignKey(Usuarios, on_delete=RESTRICT)
+    mensaje = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True, blank=True)
