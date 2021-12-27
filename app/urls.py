@@ -18,6 +18,7 @@ urlpatterns = [
     path('agregar_otros', posts.agregar_otros, name="agregar_otros"),
     path('Movimientos', views.movimientos, name="movimientos"),
     path('Ver_compras', views.ver_compras, name="ver_compras"),
+    path('Ver_cuentas_por_cobrar', views.ver_cuentas_p_c, name="Ver_cuentas_por_cobrar"),
     path('Ver_ventas', views.ver_ventas, name="ver_ventas"),
     path('Ver_otras', views.ver_otros, name="ver_otros"),
     path('generar_compra', posts.generar_compra, name="generar_compra"),

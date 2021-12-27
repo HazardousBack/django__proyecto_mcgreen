@@ -184,6 +184,18 @@ def ver_ventas(request):
     else:
         return redirect("/cerrar_sesion")
 
+def ver_cuentas_p_c(request):
+    if request.session.get('email'):
+        cursor = connection.cursor()
+        cursor.callproc("MOSTRAR_VENTAS_MOD")
+        context = {
+            'movimientos': cursor.fetchall()
+        }
+        cursor.close()
+        return render(request, 'Inventario/ver_cuentas_pc.html', context)
+    else:
+        return redirect("/cerrar_sesion")
+
 def ver_otros(request):
     if request.session.get('email'):
         cursor = connection.cursor()

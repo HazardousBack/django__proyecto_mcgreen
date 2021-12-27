@@ -8,21 +8,20 @@ from openpyxl import Workbook
 from openpyxl.styles import Font
 from openpyxl.styles.alignment import Alignment
 from openpyxl.styles.borders import BORDER_THIN, Border, Side
+
+
 def registra_usuario(request):
     if request.session.get('email'):
         cursor = connection.cursor()
         if request.method == 'POST':
             formulario = Formulario_registro(request.POST)
             if formulario.is_valid():
-                try:
-                    ext_email = formulario["slemail"].value()
-                    cursor.callproc("AGREGAR_USUARIO",[formulario["matricula"].value(),formulario["nombre_usuario"].value(),formulario["ap_p"].value(),formulario["ap_m"].value(),formulario["sl_puestos"].value(),formulario["email"].value()+ext_email,formulario["contra"].value(),formulario["rol"].value()])
-                    mensaje = cursor.fetchall()[0][0]
-                    if mensaje == 'USUARIO CREADO':
-                        crear = models.Account(username=formulario["email"].value()+formulario["slemail"].value(), email=formulario["email"].value()+formulario["slemail"].value(), password=formulario["contra"].value(), nombre=formulario["nombre_usuario"].value(), ap_paterno=formulario["ap_p"].value(),ap_materno=formulario["ap_m"].value())
-                        crear.save()
-                finally:
-                    cursor.close()
+                ext_email = formulario["slemail"].value()
+                cursor.callproc("AGREGAR_USUARIO",[formulario["matricula"].value(),formulario["nombre_usuario"].value(),formulario["ap_p"].value(),formulario["ap_m"].value(),formulario["sl_puestos"].value(),formulario["email"].value()+ext_email,formulario["contra"].value(),formulario["rol"].value()])
+                mensaje = cursor.fetchall()[0][0]
+                if mensaje == 'USUARIO CREADO':
+                    messages.success(request, mensaje)
+                mensaje.error(request, mensaje)
                 return redirect("/Registro")
             else:
                 print(formulario.errors)
@@ -99,7 +98,7 @@ def generar_cuenta_por_cobrar(request):
     if request.session.get('email'):
         if request.method == 'POST':
             cursor = connection.cursor()
-            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_productos'],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
+            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
             cursor.close()
             return redirect("/Ventas")
 
