@@ -18,3 +18,14 @@ def usuarios(request):
             return redirect("/Inventario_general")
     else:
         return redirect("/cerrar_sesion")
+
+def auditoria(request):
+    if request.session.get('email'):
+        if request.session.get("privilegio") == 'ADM-IN1' or request.session.get("privilegio") == 'JEFE':
+            cursor = connection.cursor()
+            cursor.callproc("Mostrar_AUDITORIA")
+            context = {
+                'datos_audi': cursor.fetchall(),
+            }
+            return render(request, 'auditoria.html', context)
+    return redirect("/cerrar_sesion")
