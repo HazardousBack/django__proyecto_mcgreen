@@ -18,10 +18,9 @@ def registra_usuario(request):
             if formulario.is_valid():
                 ext_email = formulario["slemail"].value()
                 cursor.callproc("AGREGAR_USUARIO",[request.session.get("email"), formulario["matricula"].value(),formulario["nombre_usuario"].value(),formulario["ap_p"].value(),formulario["ap_m"].value(),formulario["sl_puestos"].value(),formulario["email"].value()+ext_email,formulario["contra"].value(),formulario["rol"].value()])
-                mensaje = cursor.fetchall()[0][0]
-                if mensaje == 'USUARIO CREADO':
-                    messages.success(request, mensaje)
-                mensaje.error(request, mensaje)
+                if cursor.fetchall()[0][0] == 'USUARIO CREADO':
+                    messages.success(request, cursor.fetchall()[0][0])
+                messages.error(request, cursor.fetchall()[0][0])
                 return redirect("/Registro")
             else:
                 print(formulario.errors)
@@ -67,8 +66,8 @@ def activar_producto(request,id_prod):
         cursor = connection.cursor()
         cursor.callproc("ACTIVAR_PRODUCTO", [request.session.get('email'), id_prod])
         if cursor.fetchall()[0][0] != 'EL PRODUCTO: ' + id_prod + ' FUE ACTIVADO':
-            messages.error(request, "Ocurrió un error al eliminar el producto")
-        messages.error(request, "Producto eliminado")
+            messages.error(request, "Ocurrió un error al activar el producto")
+        messages.success(request, "Producto activado")
         cursor.close()
         return redirect("/Inventario_general")
     else:
@@ -79,9 +78,11 @@ def generar_compra(request):
         if request.method == 'POST':
             cursor = connection.cursor()
             cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
+            print(cursor.fetchone())
+            print(cursor.nextset())
             if cursor.fetchone() != 'FACTURA DISPONIBLE':
                 messages.error(request, "Ocurrió un error al realizar la compra")
-            messages.error(request, "Compra registrada")
+            messages.success(request, "Compra registrada")
             cursor.close()
             return redirect("/Compras")
     else:
@@ -100,6 +101,7 @@ def generar_cuenta_por_cobrar(request):
         if request.method == 'POST':
             cursor = connection.cursor()
             cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
+            print(cursor.fetchall()[0][0])
             if cursor.fetchall()[0][0] != 'CUENTA POR COBRAR AGREGADA CORRECTAMENTE VERIFIQUE LOS MOVIMIENTOS':
                 messages.error(request, "Ocurrió un error al realizar la venta")
             messages.success(request, "Venta registrada")
