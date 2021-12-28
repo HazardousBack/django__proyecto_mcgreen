@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from .admin_vistas import vistas
 from .posts import posts
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.iniciar_sesion, name="iniciar_sesion"),
@@ -34,4 +36,4 @@ urlpatterns = [
     path('convertir_com_excel/', posts.exportar_compras_excel, name="convertir_com_excel"),
     path('convertir_vta_excel/', posts.exportar_ventas_excel, name="convertir_vta_excel"),
     path('convertir_difmov_excel/', posts.exportar_diferentes_movimientos_excel, name="convertir_difmov_excel"),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
