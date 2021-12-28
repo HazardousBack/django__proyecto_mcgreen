@@ -41,6 +41,13 @@
         </ul>
     </nav>
     <div class="container d-flex justify-content-center mt-5">
+        {% if messages %}
+            <div class="mt-3 d-flex justify-content-center alert alert-success messages">
+                {% for message in messages %}
+                    <p {% if message.tags %} id="mensaje" class="alert-heading {{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="d-flex col-md-12">
             <form action="/generar_compra" method="POST" class="product-form card card-body">
                 {% csrf_token %}

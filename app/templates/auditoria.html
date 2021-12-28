@@ -45,6 +45,10 @@
     </nav>
 
     <div class="container mt-3">
+        <div class="container col-lg-4 mb-1 card card-body">
+            <h3 class="text-center">Buscar operación</h3>
+            <input type="search" id="buscar" class="form-control" placeholder="Escribe el movimiento que deseas buscar..." />
+        </div>
         <table id="table" class="table table-striped col-lg-12 text-center" style="font-size:14px;">
             <thead class="">
                 <th class="col-sm-1">ID</th>
@@ -74,5 +78,26 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#buscar").keyup(function (e) {
+                _this = this;
+
+                $.each($("#table tbody tr"), function (index) {
+                    if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) !== -1) {
+                        $(this).show();
+                    } else { 
+                        $(this).hide();
+                    }
+                })
+                document.getElementById("buscar").addEventListener("click", function (e) {
+                    $(this).empty();
+                })
+
+                e.preventDefault();
+            });
+        });
+    </script>
 </body>
 </html>

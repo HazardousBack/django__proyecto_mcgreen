@@ -17,7 +17,7 @@ def registra_usuario(request):
             formulario = Formulario_registro(request.POST)
             if formulario.is_valid():
                 ext_email = formulario["slemail"].value()
-                cursor.callproc("AGREGAR_USUARIO",[formulario["matricula"].value(),formulario["nombre_usuario"].value(),formulario["ap_p"].value(),formulario["ap_m"].value(),formulario["sl_puestos"].value(),formulario["email"].value()+ext_email,formulario["contra"].value(),formulario["rol"].value()])
+                cursor.callproc("AGREGAR_USUARIO",[request.session.get("email"), formulario["matricula"].value(),formulario["nombre_usuario"].value(),formulario["ap_p"].value(),formulario["ap_m"].value(),formulario["sl_puestos"].value(),formulario["email"].value()+ext_email,formulario["contra"].value(),formulario["rol"].value()])
                 mensaje = cursor.fetchall()[0][0]
                 if mensaje == 'USUARIO CREADO':
                     messages.success(request, mensaje)
@@ -34,15 +34,10 @@ def agregar_producto(request):
             email = request.session.get("email")
             try:
                 cursor = connection.cursor()
-                cursor.callproc("Agrega_INV", [request.POST["producto"], request.POST["descripcion"], request.POST["cantidad"], request.POST["ddw_medidas"], request.POST["ddw_departamentos"], request.POST["precio"], email])
-                print(request.POST["producto"]) 
-                print(request.POST["descripcion"]) 
-                print(request.POST["cantidad"])
-                print(request.POST["ddw_medidas"])
-                print(request.POST["ddw_departamentos"])
-                print(request.POST["precio"]) 
-                print(email)
-                print(cursor.fetchall()[0])
+                cursor.callproc("Agrega_INV", [request.session.get('email'), request.POST["producto"], request.POST["descripcion"], request.POST["cantidad"], request.POST["ddw_medidas"], request.POST["ddw_departamentos"], request.POST["precio"], email])
+                if cursor.fetchall()[0][0] != 'FACTURA DISPONIBLE':
+                    messages.error(request, "Ocurrió un error al hacer la modificación")
+                messages.success(request, "Elementos editados con éxito")
             finally:
                 cursor.close()
             return redirect("/Inventario_general")
@@ -53,13 +48,16 @@ def modificar_producto(request):
         cursor.callproc("MODIFICA_INV", [request.session.get('email'), request.POST["id_producto"], request.POST["producto"], request.POST["descripcion"], request.POST["precio"]])
         if cursor.fetchall()[0][0] != 'EL PRECIO FUE MODIFICADO CORRECTAMENTE':
             messages.error(request, "Ocurrió un error al hacer la modificación")
-        messages.success(request, "Elementos editados con éxito")
+        messages.success(request, "Elementos actualizados con éxito")
         return redirect("/Inventario_general")
 
 def descontinuar_producto(request,id_prod):
     if request.session.get("email"):
         cursor = connection.cursor()
         cursor.callproc("DESCONTINUAR_PRODUCTO", [id_prod, request.session.get("email")])
+        if cursor.fetchall()[0][0] != 'EL PRODUCTO: ' + id_prod + ' FUE DESCONTINUADO':
+            messages.error(request, "Ocurrió un error al eliminar el producto")
+        messages.error(request, "Producto eliminado")
         cursor.close()
         return redirect("/Inventario_general")
     else:
@@ -80,6 +78,9 @@ def generar_compra(request):
             try:
                 cursor = connection.cursor()
                 cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
+                if cursor.fetchall()[0][0] != 'FACTURA DISPONIBLE':
+                    messages.error(request, "Ocurrió un error al hacer la modificación")
+                messages.error(request, "Compra registrada")
             finally:
                 cursor.close()
             return redirect("/Compras")
@@ -99,6 +100,9 @@ def generar_cuenta_por_cobrar(request):
         if request.method == 'POST':
             cursor = connection.cursor()
             cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
+            if cursor.fetchall()[0][0] != 'CUENTA POR COBRAR AGREGADA CORRECTAMENTE VERIFIQUE LOS MOVIMIENTOS':
+                messages.error(request, "Ocurrió un error al realizar la venta")
+            messages.success(request, "Venta registrada")
             cursor.close()
             return redirect("/Ventas")
 
@@ -106,6 +110,9 @@ def agregar_otros(request):
     if request.method == 'POST':
         cursor = connection.cursor()
         cursor.callproc("MOV_INV", [request.POST["sl_productos"], request.POST["email"], request.POST["cantidad"], request.POST["fecha_otro"], request.POST["motivo"], request.POST["sl_tipo_mov"], request.POST["org_des"]])
+        if cursor.fetchall()[0][0] != 'FACTURA DISPONIBLE':
+            messages.error(request, "Ocurrió un error al realizar la operación")
+        messages.success(request, "Operación realizada correctamente")
         cursor.close()
         return redirect("/Otras_E_S")
 
@@ -115,10 +122,6 @@ def conseguir_precio(request,prod):
         return JsonResponse({'data': precios})
     return HttpResponse("Wrong request")
 
-def agregar_sistema(request):
-    sistemas = models.sistemas(request.POST[""])
-    return redirect("/Ventas")
-
 # Proveedores
 def agregar_proveedores(request):
     if request.session.get('email'):
@@ -126,7 +129,7 @@ def agregar_proveedores(request):
             form = formulario_proveedor(request.POST)
             if form.is_valid():
                 cursor = connection.cursor()
-                cursor.callproc("Agrega_Proveedor",[form["Identificador"].value(),form["proveedor"].value(),form["telefono"].value(),form["email"].value()])
+                cursor.callproc("Agrega_Proveedor",[request.session.get('email'), form["Identificador"].value(),form["proveedor"].value(),form["telefono"].value(),form["email"].value()])
                 cursor.close()
                 return redirect("/Compras")    
         return redirect("/Compras")
