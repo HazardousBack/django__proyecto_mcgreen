@@ -26,6 +26,7 @@ def auditoria(request):
             cursor.callproc("Mostrar_AUDITORIA")
             context = {
                 'datos_audi': cursor.fetchall(),
+                'privilegio': request.session.get('privilegio')
             }
             return render(request, 'auditoria.html', context)
     return redirect("/cerrar_sesion")
