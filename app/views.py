@@ -34,8 +34,10 @@ def registro(request):
 
 def cerrar_sesion(request):
     try:
+        cursor = connection.cursor()
+        cursor.callproc("AUDITORIA", [request.session.get('email'), "cerró sesión"])
+        cursor.close()
         del request.session["email"]
-        print(request.session)
     except KeyError:
         pass
     return render(request, "Inventario/cerrar_sesion.html")
