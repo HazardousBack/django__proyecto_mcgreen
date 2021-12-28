@@ -50,7 +50,7 @@ def agregar_producto(request):
 def modificar_producto(request):
     if request.method == 'POST':
         cursor = connection.cursor()
-        cursor.callproc("MODIFICA_INV", [request.POST["id_producto"], request.POST["producto"], request.POST["descripcion"], request.POST["precio"]])
+        cursor.callproc("MODIFICA_INV", [request.session.get('email'), request.POST["id_producto"], request.POST["producto"], request.POST["descripcion"], request.POST["precio"]])
         if cursor.fetchall()[0][0] != 'EL PRECIO FUE MODIFICADO CORRECTAMENTE':
             messages.error(request, "Ocurrió un error al hacer la modificación")
         messages.success(request, "Elementos editados con éxito")
@@ -79,7 +79,7 @@ def generar_compra(request):
         if request.method == 'POST':
             try:
                 cursor = connection.cursor()
-                cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["compra_id"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
+                cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
             finally:
                 cursor.close()
             return redirect("/Compras")
@@ -90,7 +90,7 @@ def generar_venta(request):
     if request.session.get('email'):
         if request.method == 'POST':
             cursor = connection.cursor()
-            cursor.callproc("VENTA_MOD",[request.POST["sl_sistemas"].split(' ')[0],request.POST["venta_id"],request.POST["vendedor"],request.POST["cantidad"],request.POST["p_u"],request.POST["fecha"],request.POST["motivo"],request.POST["sl_clientes"],request.POST["articulo"]])
+            cursor.callproc("VENTA_MOD",[request.POST["sl_sistemas"].split(' ')[0],request.POST["vendedor"],request.POST["cantidad"],request.POST["p_u"],request.POST["fecha"],request.POST["motivo"],request.POST["sl_clientes"],request.POST["articulo"]])
             cursor.close()
             return redirect("/Ventas")
 
@@ -105,7 +105,7 @@ def generar_cuenta_por_cobrar(request):
 def agregar_otros(request):
     if request.method == 'POST':
         cursor = connection.cursor()
-        cursor.callproc("MOV_INV", [request.POST["sl_productos"], request.POST["email"], request.POST["id_mov"], request.POST["cantidad"], request.POST["fecha_otro"], request.POST["motivo"], request.POST["sl_tipo_mov"], request.POST["org_des"]])
+        cursor.callproc("MOV_INV", [request.POST["sl_productos"], request.POST["email"], request.POST["cantidad"], request.POST["fecha_otro"], request.POST["motivo"], request.POST["sl_tipo_mov"], request.POST["org_des"]])
         cursor.close()
         return redirect("/Otras_E_S")
 
