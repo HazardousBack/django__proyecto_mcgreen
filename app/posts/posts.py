@@ -80,7 +80,8 @@ def generar_compra(request):
             cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
             print(cursor.fetchone())
             print(cursor.nextset())
-            if cursor.fetchone() != 'FACTURA DISPONIBLE':
+            print(cursor.fetchone())
+            if cursor.fetchone()[0] != 'FACTURA DISPONIBLE':
                 messages.error(request, "Ocurrió un error al realizar la compra")
             messages.success(request, "Compra registrada")
             cursor.close()
@@ -100,7 +101,7 @@ def generar_cuenta_por_cobrar(request):
     if request.session.get('email'):
         if request.method == 'POST':
             cursor = connection.cursor()
-            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
+            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'].split(' ')[0],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
             print(cursor.fetchall()[0][0])
             if cursor.fetchall()[0][0] != 'CUENTA POR COBRAR AGREGADA CORRECTAMENTE VERIFIQUE LOS MOVIMIENTOS':
                 messages.error(request, "Ocurrió un error al realizar la venta")
