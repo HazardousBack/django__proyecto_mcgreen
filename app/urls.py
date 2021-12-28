@@ -31,7 +31,6 @@ urlpatterns = [
     path('clientes/agregar_clientes', posts.agregar_clientes, name="agregar_clientes"),
     path('Usuarios', vistas.usuarios, name="usuarios"),
     path('Auditoria', vistas.auditoria, name="Auditoria"),
-    path('agregar_sistema', posts.agregar_sistema, name="agregar_sistema"),
     path('convertir_inv_excel/', posts.exportar_inventario_excel, name="convertir_inv_excel"),
     path('convertir_com_excel/', posts.exportar_compras_excel, name="convertir_com_excel"),
     path('convertir_vta_excel/', posts.exportar_ventas_excel, name="convertir_vta_excel"),
