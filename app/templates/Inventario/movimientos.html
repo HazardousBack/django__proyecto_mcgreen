@@ -7,6 +7,39 @@
     <title>Movimientos</title>
     <link rel="stylesheet" href="https://bootswatch.com/5/zephyr/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/estilos.css' %}" />
+    <style>
+        .my-custom-scrollbar {
+            position: relative;
+            height: 600px;
+            overflow: auto;
+        }
+
+        .table-wrapper-scroll-y {
+            display: block;
+        }
+
+        .caja {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .caja-contenido {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -110,6 +143,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $("#buscar").keyup(function (e) {
+                _this = this;
+
+                $.each($("#table tbody tr"), function (index) {
+                    if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) !== -1) {
+                        $(this).show();
+                    } else { 
+                        $(this).hide();
+                    }
+                })
+                document.getElementById("buscar").addEventListener("click", function (e) {
+                    $(this).empty();
+                })
+
+                e.preventDefault();
+            });
+        });
+    </script>
 </body>
 </html>
