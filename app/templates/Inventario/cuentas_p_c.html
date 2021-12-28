@@ -47,11 +47,17 @@
     <div class="container d-flex justify-content-center mt-2">
         <div class="col-md-12">
             {% if messages %}
-                <div class="mt-3 d-flex justify-content-center alert alert-success messages">
-                    {% for message in messages %}
-                        <p {% if message.tags %} id="mensaje" class="alert-heading {{ message.tags }}"{% endif %}>{{ message }}</p>
-                    {% endfor %}
-                </div>
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="mt-3 d-flex justify-content-center alert alert-success messages">
+                            <p {% if message.tags %} id="mensaje" class="alert-heading {{ message.tags }}"{% endif %}>{{ message }}</p>
+                        </div>
+                    {% else %}
+                        <div class="mt-3 d-flex justify-content-center alert alert-danger messages">
+                            <p {% if message.tags %} id="mensaje" class="alert-heading {{ message.tags }}"{% endif %}>{{ message }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
             <form action="{% url 'cuenta_por_cobrar' %}" method="POST" id="form-c_p_c" class="card card-body justify-content-center">
                 {% csrf_token %}

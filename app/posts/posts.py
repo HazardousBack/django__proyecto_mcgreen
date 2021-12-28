@@ -31,13 +31,12 @@ def registra_usuario(request):
 def agregar_producto(request):
     if request.session.get('email'):
         if request.method == 'POST':
-            email = request.session.get("email")
             try:
                 cursor = connection.cursor()
-                cursor.callproc("Agrega_INV", [request.session.get('email'), request.POST["producto"], request.POST["descripcion"], request.POST["cantidad"], request.POST["ddw_medidas"], request.POST["ddw_departamentos"], request.POST["precio"], email])
+                cursor.callproc("Agrega_INV", [request.POST["producto"], request.POST["descripcion"], request.POST["cantidad"], request.POST["ddw_medidas"], request.POST["ddw_departamentos"], request.POST["precio"], request.session.get("email")])
                 if cursor.fetchall()[0][0] != 'FACTURA DISPONIBLE':
                     messages.error(request, "Ocurrió un error al hacer la modificación")
-                messages.success(request, "Elementos editados con éxito")
+                messages.success(request, "Producto registrado con éxito")
             finally:
                 cursor.close()
             return redirect("/Inventario_general")
@@ -66,7 +65,10 @@ def descontinuar_producto(request,id_prod):
 def activar_producto(request,id_prod):
     if request.session.get("email"):
         cursor = connection.cursor()
-        cursor.callproc("ACTIVAR_PRODUCTO", [id_prod])
+        cursor.callproc("ACTIVAR_PRODUCTO", [request.session.get('email'), id_prod])
+        if cursor.fetchall()[0][0] != 'EL PRODUCTO: ' + id_prod + ' FUE ACTIVADO':
+            messages.error(request, "Ocurrió un error al eliminar el producto")
+        messages.error(request, "Producto eliminado")
         cursor.close()
         return redirect("/Inventario_general")
     else:
@@ -75,14 +77,12 @@ def activar_producto(request,id_prod):
 def generar_compra(request):
     if request.session.get('email'):
         if request.method == 'POST':
-            try:
-                cursor = connection.cursor()
-                cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
-                if cursor.fetchall()[0][0] != 'FACTURA DISPONIBLE':
-                    messages.error(request, "Ocurrió un error al hacer la modificación")
-                messages.error(request, "Compra registrada")
-            finally:
-                cursor.close()
+            cursor = connection.cursor()
+            cursor.callproc("COMPRA",[request.POST["sl_productos"], request.POST["comprador"], request.POST["cantidad"], request.POST["p_u"], request.POST["fecha_compra"], request.POST["sl_proveedores"], request.POST["motivo"]])
+            if cursor.fetchone() != 'FACTURA DISPONIBLE':
+                messages.error(request, "Ocurrió un error al realizar la compra")
+            messages.error(request, "Compra registrada")
+            cursor.close()
             return redirect("/Compras")
     else:
         return redirect("/cerrar_sesion")
