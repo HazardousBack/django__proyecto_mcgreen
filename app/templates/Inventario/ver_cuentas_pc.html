@@ -213,16 +213,25 @@
                 e.preventDefault();
             });
 
-            if(document.getElementById("form-actualizar")) {
-                $("#form-actualizar").hide();
-            }
+            $("#form-actualizar").hide();
 
+            var previosTarget = null;
             $(".modificar_venta").on('click', (e) => {
-                $("#form-actualizar").toggle();
+                var _this = $(this);
                 const element = $(this)[0].activeElement.parentElement.parentElement;
-                $(".modificar_venta").removeClass("btn-info");
-                $(".modificar_venta").addClass("btn-danger");
-                $(".modificar_venta").val("Cancelar");
+                $(this).addClass("clicked");
+                
+                if(_this === previosTarget) {
+                    $("#form-actualizar").toggle();
+                    $(this).removeClass("btn-danger");
+                    $(this).addClass("btn-info");
+                    $(this).text("Cancelar");
+                } else {
+                    previosTarget = _this;
+                    $(this).removeClass("btn-info");
+                    $(this).addClass("btn-danger");
+                    $(this).text("Cancelar");
+                }
 
                 $("input[name='id_']").val($(element).find("td").eq(0).text());
                 $("input[name='status']").val($(element).find("td").eq(1).text());
