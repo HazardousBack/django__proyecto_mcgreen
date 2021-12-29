@@ -41,6 +41,14 @@
             border: 1px solid #888;
             width: 80%;
         }
+
+        input[type="search"] {
+            -webkit-appearance: searchfield;
+        }
+        
+        input[type="search"]::-webkit-search-cancel-button {
+            -webkit-appearance: none;
+        }
     </style>
 </head>
 <body>
@@ -65,8 +73,58 @@
                 </i>
             </button>
         </form>
+        <form action="" method="POST" id="form-actualizar" class="card card-body">
+            {% csrf_token %}
+            <div class="d-flex justify-content-around mb-3">
+                <input type="text" name="id_" style="display: none;" class="form-control">
+                <div class="text-center">
+                    <label for="">Email</label>
+                    <input type="text" name="email" class="form-control" value="{{ sesion }}" readonly="true">
+                </div>
+                <div class="text-center">
+                    <label for="status">Status</label>
+                    <input type="text" name="status" class="form-control">
+                    <input type="checkbox" id="chk_status" class="form-check-input">
+                </div>
+                <div class="text-center">
+                    <label for="">Fecha de pago de factura</label>
+                    <input type="date" name="fecha_pago_fac" class="form-control">
+                </div>
+                <div class="text-center">
+                    <label for="contrar">Contrarecibo</label>
+                    <input type="text" name="contrarecibo" class="form-control">
+                    <input type="checkbox" id="chk_contrar" class="form-check-input">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between mt-3 mb-3">
+                <div class="text-center">
+                    <label for="">Fecha de recibo de pago</label>
+                    <input type="date" name="fecha_rec_pago" class="form-control">
+                </div>
+                <div class="text-center">
+                    <label for="">Fecha de factura</label>
+                    <input type="date" name="fecha_de_fac" class="form-control">
+                </div>
+                <div class="text-center">
+                    <label for="recibo_mcgreen">Recibo de pago de factura McGreen</label>
+                    <input type="text" name="recibo_pago_fac_mcgreen" class="form-control">
+                    <input type="checkbox" id="chk_recibo_mcgreen" class="form-check-input">
+                </div>
+            </div>
+            <div class="d-flex justify-content-around mt-3">
+                <div class="text-center">
+                    <label for="">Fecha de recibo de pago</label>
+                    <input type="date" name="fecha_r_pag" class="form-control">
+                </div>
+                <div class="text-center">
+                    <label for="">Monto MXN pagado</label>
+                    <input type="number" name="monto_mn_pagado" class="form-control">
+                </div>
+            </div>
+            <input type="submit" class="btn btn-success text-center" value="Actualizar">
+        </form>
         <div class="table-wrapper-scroll-y my-custom-scrollbar text-center">
-            <table class="table table-hover">
+            <table id="table" class="table table-hover">
                 <thead>
                     <tr>
                         <th>Status</th>
@@ -89,15 +147,15 @@
                         <th>Fecha de factura</th>
                         <th>Recibo de pago (factura McGreen)</th>
                         <th>Fecha de pago</th>
-                        <th>Dólares</th>
-                        <th>Monto m x p</th>
-                        <th>Monto m x p pagado</th>
+                        <th>Dólar</th>
+                        <th>Monto MXN</th>
+                        <th>Monto MXN pagado</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for mov in movimientos %}
                         <tr>
-                            <td>{{ mov.0 }}</td>
+                            <td style="display: none;">{{ mov.0 }}</td>
                             <td>{{ mov.1 }}</td>
                             <td>{{ mov.2 }}</td>
                             <td>{{ mov.3 }}</td>
@@ -117,9 +175,13 @@
                             <td>{{ mov.17 }}</td>
                             <td>{{ mov.18 }}</td>
                             <td>{{ mov.19 }}</td>
-                            <td>$ {{ mov.20|floatformat:2 }}</td>
+                            <td>{{ mov.20 }}</td>
                             <td>$ {{ mov.21|floatformat:2 }}</td>
                             <td>$ {{ mov.22|floatformat:2 }}</td>
+                            <td>$ {{ mov.23|floatformat:2 }}</td>
+                            <td>
+                                <a href="#" class="btn btn-info modificar_venta">Actualizar</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -153,6 +215,36 @@
 
                 e.preventDefault();
             });
+
+            if(document.getElementById("form-actualizar")) {
+                $("#form-actualizar").hide();
+            }
+
+            $(".modificar_venta").on('click', (e) => {
+                $("#form-actualizar").show();
+                const element = $(this)[0].activeElement.parentElement.parentElement;
+                $("input[name='id_']").val($(element).find("td").eq(0).text());
+                $("input[name='email']").val($(element).find("td").eq(1).text());
+                $("input[name='status']").val($(element).find("td").eq(2).text());
+                $("input[name='fecha_pago_fac']").val($(element).find("td").eq(3).text());
+                $("input[name='contrarecibo']").val($(element).find("td").eq(4).text());
+                $("input[name='fecha_rec_pago']").val($(element).find("td").eq(5).text());
+                $("input[name='fecha_de_fac']").val($(element).find("td").eq(18).text());
+                $("input[name='recibo_pago_fac_mcgreen']").val($(element).find("td").eq(19).text());
+                $("input[name='fecha_r_pag']").val($(element).find("td").eq(20).text());
+                $("input[name='monto_mn_pagado']").val(parseFloat($(element).find("td").eq(23).text().split(" ")[1].replace(',', '')));
+                e.preventDefault();
+            })
+
+            if($("#chk_status").is(":checked")) {
+                $("input[name='status']").val("Pendiente");
+            }
+            if($("#chk_contrar").is(":checked")) {
+                $("input[name='contrarecibo']").val("Pendiente");
+            }
+            if($("#chk_recibo_mcgreen").is(":checked")) {
+                $("input[name='recibo_pago_fac_mcgreen']").val("Pendiente");
+            }
         });
     </script>
 </body>
