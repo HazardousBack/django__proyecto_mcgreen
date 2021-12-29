@@ -97,13 +97,17 @@ def generar_venta(request):
             cursor.close()
             return redirect("/Ventas")
 
+
+# ?? Sistemas.split
 def generar_cuenta_por_cobrar(request):
     if request.session.get('email'):
         if request.method == 'POST':
+            sistema = str(request.POST('sl_sistemas')).split(' ')[0]
+            print(str(request.POST('sl_sistemas')).split(' '))
             cursor = connection.cursor()
-            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],request.POST['sl_sistemas'].split(' ')[0],request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
-            print(cursor.fetchall()[0][0])
-            if cursor.fetchall()[0][0] != 'CUENTA POR COBRAR AGREGADA CORRECTAMENTE VERIFIQUE LOS MOVIMIENTOS':
+            cursor.callproc("VENTA_MOD",[request.POST['email'],request.POST['status'],request.POST['fecha_pago_fac'],request.POST['contrarecibo'],request.POST['fecha_rec_pago'],request.POST['sp'],request.POST['oc'],request.POST['fecha'],sistema,request.POST['pozo'],request.POST['total_servicios'],request.POST['no_factura'],request.POST['fecha_de_fac'],request.POST['recibo_pago_fac_mcgreen'],request.POST['fecha_r_pag'],request.POST['dolares'],request.POST['monto_mp_pagado']])
+            print(cursor.fetchone())
+            if cursor.fetchone() != 'CUENTA POR COBRAR AGREGADA CORRECTAMENTE VERIFIQUE LOS MOVIMIENTOS':
                 messages.error(request, "Ocurrió un error al realizar la venta")
             messages.success(request, "Venta registrada")
             cursor.close()
