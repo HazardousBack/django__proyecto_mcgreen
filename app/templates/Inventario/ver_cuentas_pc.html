@@ -79,12 +79,11 @@
                 <input type="text" name="id_" style="display: none;" class="form-control">
                 <div class="text-center">
                     <label for="">Email</label>
-                    <input type="text" name="email" class="form-control" value="{{ sesion }}" readonly="true">
+                    <input type="text" name="email" class="form-control" value="{{ email }}" readonly="true">
                 </div>
                 <div class="text-center">
                     <label for="status">Status</label>
                     <input type="text" name="status" class="form-control">
-                    <input type="checkbox" id="chk_status" class="form-check-input">
                 </div>
                 <div class="text-center">
                     <label for="">Fecha de pago de factura</label>
@@ -93,7 +92,6 @@
                 <div class="text-center">
                     <label for="contrar">Contrarecibo</label>
                     <input type="text" name="contrarecibo" class="form-control">
-                    <input type="checkbox" id="chk_contrar" class="form-check-input">
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3 mb-3">
@@ -108,7 +106,6 @@
                 <div class="text-center">
                     <label for="recibo_mcgreen">Recibo de pago de factura McGreen</label>
                     <input type="text" name="recibo_pago_fac_mcgreen" class="form-control">
-                    <input type="checkbox" id="chk_recibo_mcgreen" class="form-check-input">
                 </div>
             </div>
             <div class="d-flex justify-content-around mt-3">
@@ -221,30 +218,23 @@
             }
 
             $(".modificar_venta").on('click', (e) => {
-                $("#form-actualizar").show();
+                $("#form-actualizar").toggle();
                 const element = $(this)[0].activeElement.parentElement.parentElement;
+                $(".modificar_venta").removeClass("btn-info");
+                $(".modificar_venta").addClass("btn-danger");
+                $(".modificar_venta").val("Cancelar");
+
                 $("input[name='id_']").val($(element).find("td").eq(0).text());
-                $("input[name='email']").val($(element).find("td").eq(1).text());
-                $("input[name='status']").val($(element).find("td").eq(2).text());
-                $("input[name='fecha_pago_fac']").val($(element).find("td").eq(3).text());
-                $("input[name='contrarecibo']").val($(element).find("td").eq(4).text());
-                $("input[name='fecha_rec_pago']").val($(element).find("td").eq(5).text());
+                $("input[name='status']").val($(element).find("td").eq(1).text());
+                $("input[name='fecha_pago_fac']").val($(element).find("td").eq(2).text());
+                $("input[name='contrarecibo']").val($(element).find("td").eq(3).text());
+                $("input[name='fecha_rec_pago']").val($(element).find("td").eq(4).text());
                 $("input[name='fecha_de_fac']").val($(element).find("td").eq(18).text());
                 $("input[name='recibo_pago_fac_mcgreen']").val($(element).find("td").eq(19).text());
                 $("input[name='fecha_r_pag']").val($(element).find("td").eq(20).text());
                 $("input[name='monto_mn_pagado']").val(parseFloat($(element).find("td").eq(23).text().split(" ")[1].replace(',', '')));
                 e.preventDefault();
             })
-
-            if($("#chk_status").is(":checked")) {
-                $("input[name='status']").val("Pendiente");
-            }
-            if($("#chk_contrar").is(":checked")) {
-                $("input[name='contrarecibo']").val("Pendiente");
-            }
-            if($("#chk_recibo_mcgreen").is(":checked")) {
-                $("input[name='recibo_pago_fac_mcgreen']").val("Pendiente");
-            }
         });
     </script>
 </body>

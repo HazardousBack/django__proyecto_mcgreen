@@ -70,6 +70,7 @@
                     <div class="text-center">
                         <label for="">Status</label>
                         <input type="text" name="status" class="form-control">
+                        <input type="checkbox" id="chk_status" class="checkbox-inline">
                     </div>
                     <div class="text-center">
                         <label for="">Fecha de pago de factura</label>
@@ -78,6 +79,7 @@
                     <div class="text-center">
                         <label for="">Contrarecibo</label>
                         <input type="text" name="contrarecibo" class="form-control">
+                        <input type="checkbox" id="chk_contrar" class="checkbox-inline">
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-3 mb-3">
@@ -133,6 +135,7 @@
                     <div class="text-center">
                         <label for="">Recibo de pago de factura McGreen</label>
                         <input type="text" name="recibo_pago_fac_mcgreen" class="form-control">
+                        <input type="checkbox" id="chk_recibo_mcgreen" class="checkbox-inline">
                     </div>
                     <div class="text-center">
                         <label for="">Fecha de recibo de pago</label>
@@ -155,10 +158,25 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $("#form-c_p_c select[name='sl_sistemas']").on('change', function() {
-            var $this = $(this).val().split(' ')[1];
-            
-            $('#precio_usd').val(parseFloat($this));
+        $(document).ready(function () {
+            $("#form-c_p_c select[name='sl_sistemas']").on('change', function() {
+                var $this = $(this).val().split(' ')[1];
+                
+                $('#precio_usd').val(parseFloat($this));
+            });
+
+            if($("#chk_status").is(":checked")) {
+                    $("input[name='status']").val("Pendiente");
+                    console.log("Checked");
+                }
+            if($("#chk_contrar").is(":checked")) {
+                $("input[name='contrarecibo']").val("Pendiente");
+                console.log("Checked");
+            }
+            if($("#chk_recibo_mcgreen").is(":checked")) {
+                $("input[name='recibo_pago_fac_mcgreen']").val("Pendiente");
+                console.log("Checked");
+            }
         });
     </script>
 </body>

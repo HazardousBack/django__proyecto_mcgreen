@@ -191,7 +191,8 @@ def ver_cuentas_p_c(request):
         cursor = connection.cursor()
         cursor.callproc("MOSTRAR_VENTAS_MOD")
         context = {
-            'movimientos': cursor.fetchall()
+            'movimientos': cursor.fetchall(),
+            'email': request.session.get('email')
         }
         cursor.close()
         return render(request, 'Inventario/ver_cuentas_pc.html', context)
