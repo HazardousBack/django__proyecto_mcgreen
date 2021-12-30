@@ -118,7 +118,7 @@
                     <input type="number" name="monto_mn_pagado" class="form-control">
                 </div>
             </div>
-            <input type="submit" class="btn btn-success text-center" value="Actualizar">
+            <input type="submit" class="btn btn-success text-center mt-3" value="Actualizar">
         </form>
         <div class="table-wrapper-scroll-y my-custom-scrollbar text-center">
             <table id="table" class="table table-hover">
@@ -215,21 +215,18 @@
 
             $("#form-actualizar").hide();
 
-            var previosTarget = null;
             $(".modificar_venta").on('click', (e) => {
-                var _this = $(this);
                 const element = $(this)[0].activeElement.parentElement.parentElement;
                 $(this).addClass("clicked");
                 
-                if(_this === previosTarget) {
+                if($(this).is('.clicked')) {
                     $("#form-actualizar").toggle();
-                    $(this).removeClass("btn-danger");
-                    $(this).addClass("btn-info");
                     $(this).text("Cancelar");
-                } else {
-                    previosTarget = _this;
                     $(this).removeClass("btn-info");
                     $(this).addClass("btn-danger");
+                } else {
+                    $(this).removeClass("btn-danger");
+                    $(this).addClass("btn-info");
                     $(this).text("Cancelar");
                 }
 
